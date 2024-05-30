@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>商品詳細</title>
@@ -7,17 +8,7 @@
 </head>
 <body>
 
-<div class="header">
-    <h1 class="site_logo"><a href="menu.html">商品管理システム</a></h1>
-    <div class="user">
-        <p class="user_name">佐藤さん、こんにちは</p>
-        <form class="logout_form" action="logout.html" method="get">
-            <button class="custom-btn" type="submit">
-                <img src="images/ドアアイコン.png">ログアウト</button>
-        </form>
-    </div>
-</div>
-
+<th:block th:insert="common/header"></th:block>
 <hr>
 
 <div class="update">

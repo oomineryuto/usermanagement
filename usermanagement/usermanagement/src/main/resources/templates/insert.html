@@ -34,7 +34,7 @@
             <fieldset class="label-130">
                 <div>
                     <label class="required">商品ID</label>
-                    <input type="text" name="productId" class="base-text">
+                    <input type="text" name="product_id" class="base-text">
                     <span class="error">エラーメッセージ</span>
                 </div>
                 <div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="select_block">
                     <label class="required">カテゴリ</label>
-                    <select name="categoryId" class="base-text">
+                    <select name="category_id" class="base-text">
                         <option value="1">筆記具</option>
                         <option value="2">紙製品</option>
                         <option value="3">事務消耗品</option>
@@ -74,7 +74,7 @@
             <div id="modal">
                 <p class="modal-message">登録しますか？</p>
                 <div class="btns">
-                    <button type="button" id="register-btn" class="basic-btn">登録</button>
+                    <button type="submit" id="register-btn" class="basic-btn">登録</button>
                     <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>
                 </div>
             </div>
@@ -82,7 +82,7 @@
     </div>
 </div>
 <div id="fadeLayer"></div>
-<script src="./js/commons.js"></script>
+<script src="../js/commons.js"></script>
 <script>
     'use strict'
     document.getElementById('register-btn').addEventListener('click', () => {

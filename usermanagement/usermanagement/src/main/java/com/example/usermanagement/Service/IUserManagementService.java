@@ -1,9 +1,12 @@
 package com.example.usermanagement.Service;
 
-import com.example.usermanagement.Entity.UserManagementRecord;
+import com.example.usermanagement.Entity.ProductInsert;
+import com.example.usermanagement.Entity.ProductRecord;
 
 import java.util.List;
 
 public interface IUserManagementService {
-    public List<UserManagementRecord> findAll();
+    public List<ProductRecord> findAll();
+    int insert(ProductInsert productInsert);
+    ProductInsert findByName(String name);
 }

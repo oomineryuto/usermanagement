@@ -9,4 +9,6 @@ public class UserForm {
     private String loginId;
     @NotEmpty
     private String password;
+
+
 }
