@@ -31,10 +31,18 @@ public class UserManagementRepository implements IUserManagementRepository{
         return jdbcTemplate.update("INSERT INTO products(product_id,name,price,category_id,description) VALUES(:product_id, :name, :price, :category_id, :description)", param);
     }
     @Override
-    public ProductInsert findByName(String name) {
+    public List<ProductRecord> findByName(String name) {
         var param = new MapSqlParameterSource();
         param.addValue("name","%"+name+"%");
-        var list = jdbcTemplate.query("SELECT * FROM products WHERE name LIKE :name", param, new DataClassRowMapper<>(ProductInsert.class));
+        var list = jdbcTemplate.query("SELECT product_id,products.name,price,categories.name AS category_name,description,category_id FROM products INNER JOIN categories ON products.category_id = categories.id WHERE products.name LIKE :name", param, new DataClassRowMapper<>(ProductRecord.class));
+        return list;
+    }
+    @Override
+    public ProductRecord findById(Integer id){
+        var param = new MapSqlParameterSource();
+        param.addValue("id", id);
+        var list = jdbcTemplate.query("SELECT * FROM products WHERE id = :id", param, new DataClassRowMapper<>(ProductRecord.class));
         return list.isEmpty() ? null : list.get(0);
+
     }
 }

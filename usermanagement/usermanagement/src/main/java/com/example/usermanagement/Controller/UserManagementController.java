@@ -81,9 +81,12 @@ public class UserManagementController {
     public String search(@RequestParam(name="name")String name,Model model){
         model.addAttribute("products",iUserManagementService.findByName(name));
         return "menu";
-
-
     }
+
+    @PostMapping("/detail")
+    public String detail(@Validated @ModelAttribute("detailForm") ProductForm productForm, BindingResult bindingResult, Model model
+
+    )
 
 
 

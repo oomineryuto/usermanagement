@@ -8,5 +8,6 @@ import java.util.List;
 public interface IUserManagementService {
     public List<ProductRecord> findAll();
     int insert(ProductInsert productInsert);
-    ProductInsert findByName(String name);
+    List<ProductRecord> findByName(String name);
+    public ProductRecord findById(int id);
 }

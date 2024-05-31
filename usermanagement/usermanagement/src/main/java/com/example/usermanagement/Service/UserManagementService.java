@@ -2,6 +2,7 @@ package com.example.usermanagement.Service;
 
 import com.example.usermanagement.Entity.ProductInsert;
 import com.example.usermanagement.Entity.ProductRecord;
+import com.example.usermanagement.Exception.UserNotFoundException;
 import com.example.usermanagement.Repository.IUserManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,15 @@ public class UserManagementService implements IUserManagementService {
         return iUserManagementRepository.insert(productInsert);
     }
     @Override
-    public ProductInsert findByName(String name){
+    public List<ProductRecord> findByName(String name){
         return iUserManagementRepository.findByName(name);
+    }
+    @Override
+    public ProductRecord findById(int id){
+        if(iUserManagementRepository.findById(id) == null){
+            throw new UserNotFoundException();
+        }else{
+            return iUserManagementRepository.findById(id);
+        }
     }
 }
