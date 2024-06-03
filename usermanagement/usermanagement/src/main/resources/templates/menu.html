@@ -56,7 +56,7 @@
       <td th:text="${product.name}"></td>
       <td th:text="${product.price}"></td>
       <td th:text="${product.category_name}"></td>
-      <td><a class="basic-btn detail" href="/detail">詳細</a></td>
+      <td><a class="basic-btn detail" th:href="'/detail/'+${product.id}">詳細</a></td>
 
     </tr>
     </tbody>

@@ -2,10 +2,13 @@ package com.example.usermanagement.Controller;
 
 
 import com.example.usermanagement.Entity.ProductInsert;
+import com.example.usermanagement.Entity.ProductRecord;
+import com.example.usermanagement.Entity.ProductUpdate;
 import com.example.usermanagement.Exception.UserNotFoundException;
 import com.example.usermanagement.Service.IUserManagementService;
 import com.example.usermanagement.Service.IUserService;
 import com.example.usermanagement.form.ProductForm;
+import com.example.usermanagement.form.UpdateForm;
 import com.example.usermanagement.form.UserForm;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
@@ -14,10 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserManagementController {
@@ -38,10 +38,10 @@ public class UserManagementController {
 
         return "menu";
     }
-    @GetMapping("/detail")
-    public String index3(Model model){
-        model.addAttribute("detail",iUserManagementService.findAll());
-        return"detail";
+    @GetMapping("/detail/{id}")
+    public String index3(@PathVariable("id") int id, Model model){
+        model.addAttribute("detail",iUserManagementService.findById(id));
+        return "/detail";
     }
     @PostMapping("/index")
     public String login(@Validated @ModelAttribute("loginForm") UserForm userForm, BindingResult bindingResult, Model model) {
@@ -74,7 +74,8 @@ public class UserManagementController {
         }else {
             iUserManagementService.insert(new ProductInsert(productForm.getProduct_id(),productForm.getName(),productForm.getPrice(),productForm.getCategory_id(),productForm.getDescription()));
 
-            return "redirect:/menu";
+            return "redirect:/insert";
+
         }
     }
     @GetMapping("/search")
@@ -83,13 +84,35 @@ public class UserManagementController {
         return "menu";
     }
 
-    @PostMapping("/detail")
-    public String detail(@Validated @ModelAttribute("detailForm") ProductForm productForm, BindingResult bindingResult, Model model
+    @PostMapping("/detail/{id}")
+    public String delete(@PathVariable("id") int id){
+        iUserManagementService.findById(id);
+        iUserManagementService.delete(id);
+        return "redirect:/menu";
+    }
+    @GetMapping("/updateInput/{id}")
+    public String index2(@ModelAttribute("ProductForm") ProductForm productForm,@PathVariable("id") int id,Model model) {
+        model.addAttribute("product",iUserManagementService.findById(id));
+        return "updateInput";
+    }
+    @PostMapping("/updateInput/{id}")
+    public String update (@PathVariable("id") int id, @Validated @ModelAttribute("UpdateForm") UpdateForm updateForm, BindingResult bindingResult, Model model){
 
-    )
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("product",iUserManagementService.findById(id));
+            return "updateInput";
+        }else {
+            System.out.println(id);
+            System.out.println(updateForm.getName());
+            System.out.println(updateForm.getProduct_id());
+            System.out.println(updateForm.getPrice());
+            System.out.println(updateForm.getDescription());
+            iUserManagementService.update(new ProductUpdate(
+                    id,updateForm.getProduct_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getCategory_id(),updateForm.getDescription()));
 
-
-
+            return "redirect:/menu";
+        }
+    }
 
 
 
