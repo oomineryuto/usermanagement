@@ -5,19 +5,24 @@ import com.example.usermanagement.Entity.ProductInsert;
 import com.example.usermanagement.Entity.ProductRecord;
 import com.example.usermanagement.Entity.ProductUpdate;
 import com.example.usermanagement.Exception.UserNotFoundException;
+import com.example.usermanagement.Service.ICategoryService;
 import com.example.usermanagement.Service.IUserManagementService;
 import com.example.usermanagement.Service.IUserService;
+import com.example.usermanagement.form.CategoryForm;
 import com.example.usermanagement.form.ProductForm;
 import com.example.usermanagement.form.UpdateForm;
 import com.example.usermanagement.form.UserForm;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class UserManagementController {
@@ -27,6 +32,8 @@ public class UserManagementController {
     IUserService iUserService;
     @Autowired
     IUserManagementService iUserManagementService;
+    @Autowired
+    ICategoryService iCategoryService;
     @GetMapping("/index")
     public String index(@ModelAttribute("loginForm") UserForm userform) {
         return "index";
@@ -52,7 +59,7 @@ public class UserManagementController {
                 session.setAttribute("user",iUserService.findByInfo(userForm.getLoginId(),userForm.getPassword()));
                 return "redirect:/menu";
             } catch (UserNotFoundException e) {
-                System.out.println("catch");
+              model.addAttribute("error","IDまたはパスワードが不正です");
                 return "index";
             }
         }
@@ -63,17 +70,33 @@ public class UserManagementController {
         return "logout";
     }
     @GetMapping("/insert")
-    public String index4(@ModelAttribute("ProductForm") ProductForm productForm) {
+    public String index4(@ModelAttribute("ProductForm") ProductForm productForm, Model model) {
+        model.addAttribute("categoryList", iCategoryService.categoryFindAll());
         return "insert";
     }
 
     @PostMapping("/insert")
-    public String insert (@Validated @ModelAttribute("ProductForm") ProductForm productForm, BindingResult bindingResult){
+    public String insert (@Validated @ModelAttribute("ProductForm") ProductForm productForm, BindingResult bindingResult,Model model){
         if(bindingResult.hasErrors()) {
             return "/insert";
         }else {
-            iUserManagementService.insert(new ProductInsert(productForm.getProduct_id(),productForm.getName(),productForm.getPrice(),productForm.getCategory_id(),productForm.getDescription()));
-
+            try{iUserManagementService.insert(new ProductInsert(productForm.getProduct_id(),productForm.getName(),productForm.getPrice(),productForm.getCategory_id(),productForm.getDescription()));}
+            catch (DuplicateKeyException e){
+                model.addAttribute("error","商品IDが重複しています");
+                return "insert";
+            }
+//            List<ProductRecord> list=iUserManagementService.findAll();
+//            boolean findRecord =false;
+//            for(var product : list){
+//               if(product.product_id().equals(productForm.getProduct_id())){
+//                   findRecord =true;
+//                   break;
+//               }
+//            }
+//            if(findRecord){
+//                model.addAttribute("error","商品IDが重複しています");
+//                return "insert";
+//            }
             return "redirect:/insert";
 
         }
@@ -91,28 +114,30 @@ public class UserManagementController {
         return "redirect:/menu";
     }
     @GetMapping("/updateInput/{id}")
-    public String index2(@ModelAttribute("ProductForm") ProductForm productForm,@PathVariable("id") int id,Model model) {
+    public String index2(@ModelAttribute("UpdateForm") UpdateForm updateForm,@PathVariable("id") int id,Model model) {
         model.addAttribute("product",iUserManagementService.findById(id));
+        model.addAttribute("categoryList", iCategoryService.categoryFindAll());
         return "updateInput";
     }
     @PostMapping("/updateInput/{id}")
     public String update (@PathVariable("id") int id, @Validated @ModelAttribute("UpdateForm") UpdateForm updateForm, BindingResult bindingResult, Model model){
-
+        model.addAttribute("product",iUserManagementService.findById(id));
+        model.addAttribute("categoryList", iCategoryService.categoryFindAll());
         if(bindingResult.hasErrors()) {
-            model.addAttribute("product",iUserManagementService.findById(id));
+//            model.addAttribute("product",iUserManagementService.findById(id));
             return "updateInput";
         }else {
-            System.out.println(id);
-            System.out.println(updateForm.getName());
-            System.out.println(updateForm.getProduct_id());
-            System.out.println(updateForm.getPrice());
-            System.out.println(updateForm.getDescription());
-            iUserManagementService.update(new ProductUpdate(
-                    id,updateForm.getProduct_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getCategory_id(),updateForm.getDescription()));
+            try{iUserManagementService.update(new ProductUpdate(
+                    id,updateForm.getProduct_id(),updateForm.getName(),updateForm.getPrice(),updateForm.getCategory_id(),updateForm.getDescription()));}
+            catch (DuplicateKeyException e){
+                model.addAttribute("error","商品IDが重複しています");
+                return "updateInput";
+            }
 
             return "redirect:/menu";
         }
     }
+
 
 
 

@@ -15,37 +15,43 @@
 
 <div class="insert">
     <div class="form-body">
-        <p class="error">エラーメッセージ</p>
+        <p class="error">[[${error}]]</p>
 
-        <form th:action="@{/updateInput/__${id}__}" method="post">
+        <form th:action="@{/updateInput/__${id}__}" method="post" th:object="${UpdateForm}">
             <fieldset class="label-130">
                 <div>
                     <label>商品ID</label>
-                    <input type="text" name="product_id" th:value="${product.product_id}" class="base-text">
-                    <span class="error">エラーメッセージ</span>
+                    <input type="text" name="product_id" th:value="${product.product_id}" class="base-text" th:filed="*{product_id}">
+                    <span class="error" th:each="error: ${#fields.errors('product_id')}">
+                        [[ ${error} ]]
+                    </span>
                 </div>
                 <div>
                     <label>商品名</label>
-                    <input type="text" name="name" th:value="${product.name}" class="base-text">
-                    <span class="error">エラーメッセージ</span>
+                    <input type="text" name="name" th:value="${product.name}" class="base-text" th:filed="*{name}">
+                    <span class="error" th:each="error: ${#fields.errors('name')}">
+                        [[ ${error} ]]
+                    </span>
                 </div>
                 <div>
                     <label>単価</label>
-                    <input type="text" name="price" th:value="${product.price}" class="base-text">
-                    <span class="error">エラーメッセージ</span>
+                    <input type="text" name="price" th:value="${product.price}" class="base-text" th:filed="*{price}">
+                    <span class="error" th:each="error: ${#fields.errors('price')}">
+                        [[ ${error} ]]
+                    </span>
                 </div>
                 <div>
-                    <label>カテゴリ</label> <select name="category_id" class="base-text">
-                    <option value="1">筆記具</option>
-                    <option value="2">紙製品</option>
-                    <option value="3">事務消耗品</option>
-                    <option value="4">オフィス機器</option>
-                    <option value="5">雑貨</option>
+                    <label>カテゴリ</label>
+                    <select name="category_id" class="base-text">
+                        <option th:each="category : ${categoryList}"
+                                th:value="${category.id}" th:text="${category.name}" th:filed="*{category_id}">
+                        </option>
+                    </select>
                 </select>
                 </div>
                 <div>
                     <label>商品説明</label>
-                    <textarea name="description" class="base-text" th:text="${product.description}">
+                    <textarea name="description" class="base-text" th:text="${product.description}" th:filed="*{description}" >
 
             </textarea>
                 </div>
@@ -57,7 +63,7 @@
             </fieldset>
             <div class="btns">
                 <button type="button" onclick="openModal()" class="basic-btn">更新</button>
-                <input type="button" onclick="location.href='./menu.html'" value="メニューに戻る" class="cancel-btn">
+                <input type="button" onclick="location.href='../menu'" value="メニューに戻る" class="cancel-btn">
             </div>
             <div id="modal">
                 <p class="modal-message">更新しますか？</p>

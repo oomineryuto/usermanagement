@@ -43,8 +43,8 @@
             </fieldset>
             <div>
                 <div class="btns">
-                    <input type="button" onclick="openModal()" value="削除" class="basic-btn">
-                    <input type="button" th:onclick="|location.href='/updateInput/__${id}__'|" value="編集" class="basic-btn">
+                    <input type="button" onclick="openModal()" value="削除" class="basic-btn" th:if="${session.user.role==1}">
+                    <input type="button" th:onclick="|location.href='/updateInput/__${id}__'|" value="編集" class="basic-btn" th:if="${session.user.role==1}">
                     <input type="button" onclick="location.href='/menu'" value="戻る" class="cancel-btn">
                 </div>
                 <div id="modal">
